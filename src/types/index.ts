@@ -78,3 +78,38 @@ export interface RecommendationFeedback {
   comments?: string;
   timestamp: Date;
 }
+
+// ===== Founder-related types =====
+export interface FounderExperience {
+  role: string;
+  company: string;
+  startYear?: number;
+  endYear?: number;
+  description?: string;
+}
+
+export interface FounderProfile {
+  bio?: string;
+  skills?: string[];
+  interests?: string[];
+  experience?: FounderExperience[];
+  linkedinUrl?: string;
+  websiteUrl?: string;
+}
+
+export interface Founder {
+  id: string;
+  name: string;
+  email: string;
+  startup?: Startup;
+  profile?: FounderProfile;
+}
+
+// Lightweight chat types to support in-app conversations
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  timestamp: number; // epoch ms
+}
