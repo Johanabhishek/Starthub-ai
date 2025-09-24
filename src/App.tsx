@@ -14,6 +14,7 @@ import FoundersPage from './pages/founder/FoundersPage';
 import SignInPage from './pages/auth/SignIn';
 import SignUpPage from './pages/auth/SignUp';
 import NotFoundPage from './pages/NotFound';
+import FounderProfilePage from './pages/founder/Profile';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           
           {/* Founder routes */}
           <Route path="for-founders" element={<FoundersPage />} />
+          <Route path="founder/profile" element={<FounderProfilePage />} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFoundPage />} />
