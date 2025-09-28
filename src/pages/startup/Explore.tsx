@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, 'useState', 'useEffect' from 'react';
 import { Link } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase-config'; // Make sure this path is correct for your project!
+import { collection, getDocs, DocumentData } from 'firebase/firestore';
+
+// --- ATTENTION: FILE PATH CORRECTION ---
+// This import path is critical. It tells this file where to find your Firebase configuration.
+// Based on a standard project structure where:
+//   - This file is at: src/pages/startup/Explore.tsx
+//   - Your config is at: src/firebase-config.ts
+// The path below is correct. Please double-check that your files are in these locations.
+import { db } from '../../firebase-config';
 
 // This defines what a "startup" object looks like for TypeScript
 interface Startup {
@@ -25,7 +32,7 @@ const StartupExplore: React.FC = () => {
         const startupsCollectionRef = collection(db, 'startups');
         const querySnapshot = await getDocs(startupsCollectionRef);
         
-        const startupsList = querySnapshot.docs.map(doc => ({
+        const startupsList = querySnapshot.docs.map((doc: DocumentData) => ({
           id: doc.id,
           ...doc.data()
         })) as Startup[];
