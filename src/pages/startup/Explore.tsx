@@ -1,9 +1,24 @@
-import React, { useState, useEffect } from 'react'; // Corrected the import syntax
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, DocumentData } from 'firebase/firestore';
-import { db } from '../../firebase-config'; // Make sure this path is correct for your project
 
-// This defines what a "startup" object looks like for TypeScript
+// --- ATTENTION: FILE PATH CORRECTION ---
+// The error you are seeing is because this file path is incorrect for your project structure.
+// You MUST fix this line to match the location of your `firebase-config.ts` file.
+//
+// Common examples based on where you placed `firebase-config.ts`:
+//
+// 1. If `firebase-config.ts` is in the main `src/` folder:
+//    import { db } from '../../firebase-config';
+//
+// 2. If you created a `src/firebase/` folder for it:
+//    import { db } from '../../firebase/firebase-config';
+//
+// 3. If it's in the same folder as this component (unlikely but possible):
+//    import { db } from './firebase-config';
+//
+import { db } from '../../firebase-config'; // <--- This is the line you must verify and correct.
+
 interface Startup {
   id: string;
   startupName: string;
@@ -42,20 +57,11 @@ const StartupExplore: React.FC = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-xl">Loading startups...</p>
-      </div>
-    );
+    return <div className="container mx-auto px-4 py-8 text-center"><p className="text-xl">Loading startups...</p></div>;
   }
 
   if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg">
-        <p className="font-bold">Error</p>
-        <p>{error}</p>
-      </div>
-    );
+    return <div className="container mx-auto px-4 py-8 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg"><p className="font-bold">Error</p><p>{error}</p></div>;
   }
 
   return (
@@ -74,21 +80,14 @@ const StartupExplore: React.FC = () => {
                   <div>
                     <h3 className="font-bold text-lg">{startup.startupName}</h3>
                     <div className="flex space-x-2 mt-1">
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
-                        {startup.industry}
-                      </span>
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
-                        {startup.fundingStage}
-                      </span>
+                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.industry}</span>
+                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.fundingStage}</span>
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 mb-4 h-20 overflow-hidden">
-                  {startup.description}
-                </p>
-                <p className="text-sm text-gray-500 mb-4">
-                  {startup.location}
-                </p>
+                <p className="text-gray-600 mb-4 h-20 overflow-hidden">{startup.description}</p>
+                <p className="text-sm text-gray-500 mb-4">{startup.location}</p>
+                {/* --- THIS IS THE FIX --- */}
                 <Link to={`/startup/${startup.id}`} className="w-full block text-center py-2 px-4 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
                   View Details
                 </Link>
@@ -97,9 +96,7 @@ const StartupExplore: React.FC = () => {
           ))}
         </div>
       ) : (
-         <div className="text-center py-16">
-            <p className="text-lg text-gray-600">No startups have been submitted yet. Be the first to create one!</p>
-        </div>
+         <div className="text-center py-16"><p className="text-lg text-gray-600">No startups have been submitted yet. Be the first to create one!</p></div>
       )}
     </div>
   );
