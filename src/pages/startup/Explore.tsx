@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, DocumentData } from 'firebase/firestore';
+import { db } from '../../firebase-config'; // Make sure this path is correct for your project
 
-// --- ATTENTION: FILE PATH CORRECTION ---
-// The error you are seeing is because this file path is incorrect for your project structure.
-// You MUST fix this line to match the location of your `firebase-config.ts` file.
-//
-// Common examples based on where you placed `firebase-config.ts`:
-//
-// 1. If `firebase-config.ts` is in the main `src/` folder:
-//    import { db } from '../../firebase-config';
-//
-// 2. If you created a `src/firebase/` folder for it:
-//    import { db } from '../../firebase/firebase-config';
-//
-// 3. If it's in the same folder as this component (unlikely but possible):
-//    import { db } from './firebase-config';
-//
-import { db } from '../../firebase-config'; // <--- This is the line you must verify and correct.
-
+// This defines what a "startup" object looks like for TypeScript
 interface Startup {
   id: string;
-  startupName: string;
+  name: string; // FIX: Changed from startupName to name
   industry: string;
   description: string;
   location: string;
@@ -71,28 +56,32 @@ const StartupExplore: React.FC = () => {
       {startups.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {startups.map(startup => (
-            <div key={startup.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
-                    <span className="text-primary font-bold">{startup.startupName.substring(0, 2).toUpperCase()}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">{startup.startupName}</h3>
-                    <div className="flex space-x-2 mt-1">
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.industry}</span>
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.fundingStage}</span>
+            // Add a check to ensure startup.name exists before trying to render the card
+            startup.name && (
+              <div key={startup.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                      {/* --- THIS IS THE FIX --- */}
+                      <span className="text-primary font-bold">{startup.name.substring(0, 2).toUpperCase()}</span>
+                    </div>
+                    <div>
+                      {/* --- THIS IS THE FIX --- */}
+                      <h3 className="font-bold text-lg">{startup.name}</h3>
+                      <div className="flex space-x-2 mt-1">
+                        <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.industry}</span>
+                        <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">{startup.fundingStage}</span>
+                      </div>
                     </div>
                   </div>
+                  <p className="text-gray-600 mb-4 h-20 overflow-hidden">{startup.description}</p>
+                  <p className="text-sm text-gray-500 mb-4">{startup.location}</p>
+                  <Link to={`/startup/${startup.id}`} className="w-full block text-center py-2 px-4 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                    View Details
+                  </Link>
                 </div>
-                <p className="text-gray-600 mb-4 h-20 overflow-hidden">{startup.description}</p>
-                <p className="text-sm text-gray-500 mb-4">{startup.location}</p>
-                {/* --- THIS IS THE FIX --- */}
-                <Link to={`/startup/${startup.id}`} className="w-full block text-center py-2 px-4 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
-                  View Details
-                </Link>
               </div>
-            </div>
+            )
           ))}
         </div>
       ) : (
