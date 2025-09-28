@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Corrected the import syntax
 import { Link } from 'react-router-dom';
 import { collection, getDocs, DocumentData } from 'firebase/firestore';
 import { db } from '../../firebase-config'; // Make sure this path is correct for your project
