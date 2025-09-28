@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc, DocumentData } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 // --- ATTENTION: FILE PATH CORRECTION ---
 // The error you are seeing is because this file path is incorrect for your project structure.
 // You MUST fix this line to match the location of your `firebase-config.ts` file.
 //
-// Common examples based on where you placed `firebase-config.ts`:
+// Your component is at: src/pages/startup/Detail.tsx
+// Your config is at:    src/firebase-config.ts
 //
-// 1. If `firebase-config.ts` is in the main `src/` folder:
-//    import { db } from '../../firebase-config';
+// The correct relative path is to go up two folders (`startup` and `pages`) to reach the `src` directory.
 //
-// 2. If you created a `src/firebase/` folder for it:
-//    import { db } from '../../firebase/firebase-config';
-//
-// 3. If it's in the same folder as this component (unlikely but possible):
-//    import { db } from './firebase-config';
-//
-import { db } from '../../firebase-config'; // <--- This is the line you must verify and correct.
+// Change the line below to:
+import { db } from '../../firebase-config'; // <--- THIS IS THE LINE TO FIX
 
 interface StartupDetails {
   startupName?: string;
@@ -29,7 +24,6 @@ interface StartupDetails {
   businessModel?: string;
   marketSize?: string;
   description?: string;
-  // We're not including fields like 'Total Raised' yet
 }
 
 const StartupDetail: React.FC = () => {
@@ -106,8 +100,6 @@ const StartupDetail: React.FC = () => {
               <li><strong>Market Size:</strong> {startup.marketSize}</li>
             </ul>
           </div>
-          {/* Note: We are hiding the Funding and Traction sections for now
-              since we don't have that data in our database yet. */}
         </div>
         
         <div className="mt-8 text-center">
