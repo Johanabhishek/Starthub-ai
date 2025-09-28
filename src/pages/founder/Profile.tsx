@@ -24,12 +24,6 @@ const FounderProfilePage: React.FC = () => {
   const [startupForm, setStartupForm] = useState<Startup>(defaultStartup);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Chat state (can be removed if not used)
-  const [_isConnected, _setIsConnected] = useState(false);
-  const [_showChat, _setShowChat] = useState(false);
-  const [_messages, _setMessages] = useState<ChatMessage[]>([]);
-  const [_chatInput, _setChatInput] = useState('');
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -37,10 +31,10 @@ const FounderProfilePage: React.FC = () => {
         const founderDocRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(founderDocRef);
         if (docSnap.exists()) {
-          const founderData = docSnap.data() as Founder;
+          const founderData = docSnap.data() as any;
           setFounder({
               ...founderData,
-              name: `${founderData.firstName} ${founderData.lastName}`
+              name: `${founderData.firstName || ''} ${founderData.lastName || ''}`.trim() || founderData.name || 'Founder'
           });
           setForm(founderData.profile || {});
         }
@@ -96,7 +90,7 @@ const FounderProfilePage: React.FC = () => {
       const founderDocRef = doc(db, 'users', currentUser.uid);
       await setDoc(founderDocRef, { startupId: docRef.id }, { merge: true });
       
-      setFounder(prev => ({ ...prev, startupId: docRef.id }));
+      setFounder(prev => ({ ...prev, startupId: docRef.id } as any));
       setCreatingStartup(false);
       alert("Startup created successfully!");
     } catch (error) {
@@ -234,7 +228,7 @@ const FounderProfilePage: React.FC = () => {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Startup</h2>
-          {!founder.startupId && !creatingStartup && (
+          {!(founder as any).startupId && !creatingStartup && (
             <button
               onClick={() => setCreatingStartup(true)}
               className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700"
@@ -285,7 +279,7 @@ const FounderProfilePage: React.FC = () => {
              </div>
            </div>
         ) : (
-          <p className="text-gray-600">{founder.startupId ? 'You have created a startup.' : 'You haven\'t created a startup yet.'}</p>
+          <p className="text-gray-600">{(founder as any).startupId ? 'You have created a startup.' : 'You haven\'t created a startup yet.'}</p>
         )}
       </div>
     </div>
@@ -293,4 +287,3 @@ const FounderProfilePage: React.FC = () => {
 };
 
 export default FounderProfilePage;
-
