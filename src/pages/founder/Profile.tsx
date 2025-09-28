@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../firebase-config'; // Adjust path as needed
-import { Founder, FounderProfile, Startup } from '../../types';  # addchatmessagelater
+import { Founder, FounderProfile, Startup } from '../../types';  
 
 // Default empty states
 const defaultFounder: Founder = { id: '', name: 'Founder', email: '', profile: {} };
