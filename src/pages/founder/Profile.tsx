@@ -25,10 +25,10 @@ const FounderProfilePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Chat state (can be removed if not used)
-  const [isConnected, setIsConnected] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [chatInput, setChatInput] = useState('');
+  const [isConnected, _setIsConnected] = useState(false);
+  const [showChat, _setShowChat] = useState(false);
+  const [messages, _setMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, _setChatInput] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
