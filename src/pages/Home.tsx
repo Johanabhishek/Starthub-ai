@@ -30,7 +30,7 @@ const HomePage: React.FC = () => {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Find Your Perfect
               <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"> Co-Founder</span>
-              <br />in Minutes
+              <br />here. This is your starting point.
             </h1>
             
             <p className="text-xl md:text-2xl mb-10 text-gray-100 max-w-3xl mx-auto">
