@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 
 interface Startup {
@@ -20,7 +20,7 @@ const StartupExplore: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Safe field getter with fallbacks
+  // Safe field getters (same as before)
   const getStartupName = (startup: Startup): string => {
     return startup.name || startup.startupName || 'Unnamed Startup';
   };
@@ -50,7 +50,6 @@ const StartupExplore: React.FC = () => {
     return name.charAt(0).toUpperCase() || 'S';
   };
 
-  // Validate startup data
   const isValidStartup = (startup: any): boolean => {
     return startup && 
            typeof startup === 'object' && 
@@ -58,17 +57,29 @@ const StartupExplore: React.FC = () => {
            startup.id;
   };
 
+  // FIXED: Use onSnapshot for real-time updates instead of getDocs
   useEffect(() => {
-    const fetchStartups = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        const startupsCollectionRef = collection(db, 'startups');
-        const querySnapshot = await getDocs(startupsCollectionRef);
-        
+    setIsLoading(true);
+    setError(null);
+    
+    console.log("🔥 Setting up real-time listener...");
+    
+    const startupsCollectionRef = collection(db, 'startups');
+    
+    // This listens for real-time updates
+    const unsubscribe = onSnapshot(
+      startupsCollectionRef, 
+      (querySnapshot) => {
+        console.log("📊 Real-time update received:", {
+          empty: querySnapshot.empty,
+          size: querySnapshot.size,
+          docs: querySnapshot.docs.length
+        });
+
         if (querySnapshot.empty) {
+          console.log("📭 No documents found in startups collection");
           setStartups([]);
+          setIsLoading(false);
           return;
         }
 
@@ -76,11 +87,12 @@ const StartupExplore: React.FC = () => {
         
         querySnapshot.docs.forEach((doc) => {
           const data = doc.data();
+          console.log("📄 Document data:", { id: doc.id, ...data });
+          
           if (isValidStartup({ ...data, id: doc.id })) {
             startupsList.push({
               id: doc.id,
               ...data,
-              // Ensure string fields exist and are strings
               name: data.name || data.startupName || '',
               startupName: data.startupName || data.name || '',
               description: data.description || '',
@@ -91,19 +103,25 @@ const StartupExplore: React.FC = () => {
           }
         });
 
+        console.log("✅ Final startups list:", startupsList);
         setStartups(startupsList);
-      } catch (err) {
-        console.error("Error fetching startups: ", err);
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error("💥 Firebase real-time error:", err);
         setError('Failed to load startups. Please check your internet connection and try again.');
-      } finally {
         setIsLoading(false);
       }
+    );
+
+    // Cleanup function to unsubscribe when component unmounts
+    return () => {
+      console.log("🧹 Cleaning up real-time listener");
+      unsubscribe();
     };
+  }, []); // Empty dependency array is correct for real-time listeners
 
-    fetchStartups();
-  }, []);
-
-  // Loading state
+  // Rest of your component remains the same...
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -115,7 +133,6 @@ const StartupExplore: React.FC = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -153,7 +170,6 @@ const StartupExplore: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {startups.map(startup => {
-              // Extra safety check for each startup
               if (!startup || !startup.id) {
                 return null;
               }
