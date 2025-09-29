@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center">
             {/* Attention-grabbing badge */}
             <div className="inline-block px-4 py-2 bg-white/20 backdrop-blur rounded-full text-sm font-medium mb-6">
-              🚀 Join 500+ Indian Founders Building the Future
+              🚀 Join 500+ Founders Building the Future
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
