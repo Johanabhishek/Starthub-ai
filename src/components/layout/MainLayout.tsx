@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
+import { auth } from '../../firebase-config';
 
 const MainLayout: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      // no-op: optionally surface a toast in the future
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">
@@ -27,12 +47,25 @@ const MainLayout: React.FC = () => {
             </nav>
             
             <div className="flex items-center space-x-4">
-              <Link to="/signin" className="text-gray-700 hover:text-primary">
-                Sign In
-              </Link>
-              <Link to="/signup" className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                Sign Up
-              </Link>
+              {!currentUser ? (
+                <>
+                  <Link to="/signin" className="text-gray-700 hover:text-primary">
+                    Sign In
+                  </Link>
+                  <Link to="/signup" className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
+                    Sign Up
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/investor/dashboard" className="text-gray-700 hover:text-primary">
+                    Dashboard
+                  </Link>
+                  <button onClick={handleSignOut} className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">
+                    Sign Out
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
