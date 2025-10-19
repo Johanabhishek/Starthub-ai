@@ -15,6 +15,12 @@ import SignInPage from './pages/auth/SignIn';
 import SignUpPage from './pages/auth/SignUp';
 import NotFoundPage from './pages/NotFound';
 import FounderProfilePage from './pages/founder/Profile';
+import AdminRoute from './pages/admin/AdminRoute';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminUsers from './pages/admin/Users';
+import AdminData from './pages/admin/Data';
+import AdminSettings from './pages/admin/Settings';
+import AdminLayout from './pages/admin/AdminLayout';
 
 function App() {
   return (
@@ -47,6 +53,22 @@ function App() {
           {/* Founder routes */}
           <Route path="for-founders" element={<FoundersPage />} />
           <Route path="founder/profile" element={<FounderProfilePage />} />
+
+          {/* Admin routes */}
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="data" element={<AdminData />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFoundPage />} />

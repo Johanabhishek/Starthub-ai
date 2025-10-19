@@ -82,7 +82,7 @@ const HomePage: React.FC = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="group">
-              <div className="text-4xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform">25+</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform">60+</div>
               <div className="text-gray-600 font-medium">Early Adopters</div>
               <div className="text-sm text-gray-400">Creating profiles daily</div>
             </div>
@@ -265,7 +265,7 @@ const HomePage: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">See the Platform in Action</h2>
             <p className="text-xl text-gray-600 mb-8">
-              Our 25 early adopters are already creating amazing startup profiles. 
+              Our 60+ early adopters are already creating amazing startup profiles. 
               This is what the platform looks like today, with enhanced features coming soon.
             </p>
             
@@ -298,7 +298,7 @@ const HomePage: React.FC = () => {
                 </div>
                 
                 <div className="text-left">
-                  <h3 className="text-xl font-bold mb-4">🚀 Coming with Funding</h3>
+                  <h3 className="text-xl font-bold mb-4">🚀 Coming in future</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center">
                       <span className="text-blue-500 mr-2">○</span>
@@ -362,7 +362,7 @@ const HomePage: React.FC = () => {
                 to="/founder/profile" 
                 className="px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-2xl text-lg"
               >
-                🚀 Create Your Profile
+                🚀 Create Your Startup Profile
               </Link>
               <Link 
                 to="/startup/explore" 
