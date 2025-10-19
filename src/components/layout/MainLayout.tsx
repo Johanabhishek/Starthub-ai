@@ -1,39 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
-import { auth } from '../../firebase-config';
-import { isCurrentUserAdmin } from '../../lib/utils';
 
 const MainLayout: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        try {
-          const admin = await isCurrentUserAdmin();
-          setIsAdmin(admin);
-        } catch {
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      // no-op: optionally surface a toast in the future
-      console.error(error);
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">
