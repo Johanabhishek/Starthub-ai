@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { getAuth } from 'firebase/auth'
 import { getFirestore, collection, getDocs } from 'firebase/firestore'
-import { auth } from '../../firebase-config'
 
 const DEFAULT_COLLECTIONS = ['users', 'startups', 'investors']
 
@@ -78,18 +77,14 @@ const AdminDataPage: React.FC = () => {
         }
       }
       setLastResult(results)
-      // quick user feedback
       const successCount = Object.values(results).filter((n) => n > 0).length
       if (successCount > 0) {
-        // eslint-disable-next-line no-alert
         alert(`Export complete. ${successCount} file(s) downloaded.`)
       } else {
-        // eslint-disable-next-line no-alert
         alert('Export finished but no documents found in the requested collections.')
       }
     } catch (err) {
       console.error('Export error:', err)
-      // eslint-disable-next-line no-alert
       alert('Export failed. Check console for details.')
     } finally {
       setExporting(false)
@@ -119,11 +114,9 @@ const AdminDataPage: React.FC = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Admin Data</h1>
-
       <p className="text-sm text-gray-600 mb-4">
         Export admin data to CSV. This will fetch the configured Firestore collections and download one CSV per collection.
       </p>
-
       <div className="flex items-center gap-3">
         <button
           onClick={() => handleExport(DEFAULT_COLLECTIONS)}
@@ -132,7 +125,6 @@ const AdminDataPage: React.FC = () => {
         >
           {exporting ? 'Exporting…' : 'Export to CSV (users, startups, investors)'}
         </button>
-
         <button
           onClick={() => handleExport(['users'])}
           disabled={exporting}
@@ -140,7 +132,6 @@ const AdminDataPage: React.FC = () => {
         >
           {exporting ? 'Exporting…' : 'Export users CSV'}
         </button>
-
         <button
           onClick={() => handleExport(['startups'])}
           disabled={exporting}
@@ -148,8 +139,15 @@ const AdminDataPage: React.FC = () => {
         >
           {exporting ? 'Exporting…' : 'Export startups CSV'}
         </button>
+        {/* Added: Export users via cloud function */}
+        <button
+          onClick={handleExportUsers}
+          disabled={exporting}
+          className="px-3 py-2 bg-blue-300 text-white rounded hover:bg-blue-500 disabled:opacity-50"
+        >
+          Export users (Cloud Function)
+        </button>
       </div>
-
       {lastResult && (
         <div className="mt-4 text-sm">
           <strong>Last export results:</strong>
@@ -167,5 +165,3 @@ const AdminDataPage: React.FC = () => {
 }
 
 export default AdminDataPage
-
-
