@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth'
@@ -48,6 +49,66 @@ const MainLayout: React.FC = () => {
       // noop
     }
   }
+=======
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged, signOut, User, getIdTokenResult } from 'firebase/auth';
+
+const MainLayout: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      setCheckingAuth(true);
+      setCurrentUser(user);
+      setIsAdmin(false);
+
+      if (user) {
+        try {
+          // force refresh to pick up new custom claims if recently set
+          const tokenResult = await getIdTokenResult(user, /* forceRefresh */ true);
+          const claimAdmin = Boolean((tokenResult.claims as any)?.admin);
+
+          // optional fallback: VITE_ADMIN_EMAILS="admin@example.com,other@x.com"
+          const adminList = (import.meta.env.VITE_ADMIN_EMAILS || '')
+            .split(',')
+            .map((s: string) => s.trim().toLowerCase())
+            .filter(Boolean);
+          const emailIsAdmin = user.email ? adminList.includes(user.email.toLowerCase()) : false;
+
+          setIsAdmin(claimAdmin || emailIsAdmin);
+
+          // debug log (remove in production)
+          // console.info('Auth debug', { email: user.email, claims: tokenResult.claims, envAdmins: adminList });
+        } catch (err) {
+          // console.error('Error reading token claims', err);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+
+      setCheckingAuth(false);
+    });
+
+    return () => unsub();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(getAuth());
+      setCurrentUser(null);
+      setIsAdmin(false);
+      navigate('/');
+    } catch (err) {
+      // console.error('Sign out failed', err);
+    }
+  };
+>>>>>>> f7fde030968a8d75f928a591955937a8521068d8
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -61,11 +122,30 @@ const MainLayout: React.FC = () => {
               </Link>
             </div>
 
+<<<<<<< HEAD
             <nav className="flex space-x-8">
               <Link to="/startup/explore" className="text-gray-700 hover:text-primary">Explore</Link>
               <Link to="/for-founders" className="text-gray-700 hover:text-primary">For Founders</Link>
               <Link to="/investor/dashboard" className="text-gray-700 hover:text-primary">For Investors</Link>
               {isAdmin && <Link to="/admin/dashboard" className="text-gray-700 hover:text-primary">Admin</Link>}
+=======
+            {/* show nav on all sizes so Admin link is visible */}
+            <nav className="flex space-x-8">
+              <Link to="/startup/explore" className="text-gray-700 hover:text-primary">
+                Explore
+              </Link>
+              <Link to="/for-founders" className="text-gray-700 hover:text-primary">
+                For Founders
+              </Link>
+              <Link to="/investor/dashboard" className="text-gray-700 hover:text-primary">
+                For Investors
+              </Link>
+              {isAdmin && (
+                <Link to="/admin/dashboard" className="text-gray-700 hover:text-primary">
+                  Admin
+                </Link>
+              )}
+>>>>>>> f7fde030968a8d75f928a591955937a8521068d8
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -79,6 +159,18 @@ const MainLayout: React.FC = () => {
                   <Link to="/investor/dashboard" className="text-gray-700 hover:text-primary">Dashboard</Link>
                   <button onClick={handleSignOut} className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">Sign Out</button>
                 </>
+<<<<<<< HEAD
+=======
+              ) : currentUser ? (
+                <>
+                  <Link to="/investor/dashboard" className="text-gray-700 hover:text-primary">
+                    Dashboard
+                  </Link>
+                  <button onClick={handleSignOut} className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200">
+                    Sign Out
+                  </button>
+                </>
+>>>>>>> f7fde030968a8d75f928a591955937a8521068d8
               ) : (
                 <div /> /* placeholder while checking auth */
               )}
@@ -140,14 +232,22 @@ const MainLayout: React.FC = () => {
                   <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
                 </svg>
               </a>
+<<<<<<< HEAD
 
+=======
+              
+>>>>>>> f7fde030968a8d75f928a591955937a8521068d8
               <a href="#" className="text-gray-400 hover:text-white" aria-label="Twitter">
                 <span className="sr-only">Twitter</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                 </svg>
               </a>
+<<<<<<< HEAD
 
+=======
+              
+>>>>>>> f7fde030968a8d75f928a591955937a8521068d8
               <a href="#" className="text-gray-400 hover:text-white" aria-label="LinkedIn">
                 <span className="sr-only">LinkedIn</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
