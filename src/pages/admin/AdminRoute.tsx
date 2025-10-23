@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from '../../firebase-config'
-import { isCurrentUserAdmin } from '../../lib/utils'
+import { getDoc, doc, getFirestore } from 'firebase/firestore'
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(auth.currentUser)
@@ -17,9 +17,38 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         setLoading(false)
         return
       }
+
+      setLoading(true)
       try {
-        const admin = await isCurrentUserAdmin()
-        setIsAdmin(admin)
+        const db = getFirestore()
+        // 1) Check Firestore users collection for role/isAdmin
+        try {
+          const userDoc = await getDoc(doc(db, 'users', current.uid))
+          if (userDoc.exists()) {
+            const data = userDoc.data() as any
+            if (data?.role === 'admin' || data?.isAdmin === true) {
+              setIsAdmin(true)
+              return
+            }
+          }
+        } catch (e) {
+          // continue to other checks if Firestore read fails
+          console.error('Firestore user role check failed:', e)
+        }
+
+        // 2) Check Firebase custom claims as fallback
+        try {
+          const idTokenResult = await current.getIdTokenResult()
+          if (idTokenResult?.claims?.admin) {
+            setIsAdmin(true)
+            return
+          }
+        } catch (e) {
+          console.error('Token claims check failed:', e)
+        }
+
+        // default to non-admin
+        setIsAdmin(false)
       } finally {
         setLoading(false)
       }
